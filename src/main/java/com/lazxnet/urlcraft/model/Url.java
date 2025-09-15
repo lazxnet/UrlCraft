@@ -38,7 +38,7 @@ public class Url {
         this.originalUrl = originalUrl;
         this.shortCode = shortCode;
         this.createdAt = LocalDateTime.now();
-        this.expiresAt = LocalDateTime.now();
+        this.expiresAt = expiresAt;
     }
 
     // Metodo para verificar si la URL ha expirado
