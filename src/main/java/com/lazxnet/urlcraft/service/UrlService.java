@@ -1,7 +1,6 @@
 package com.lazxnet.urlcraft.service;
 
 import com.lazxnet.urlcraft.exception.InvalidUrlException;
-import com.lazxnet.urlcraft.exception.ResourceNotFoundException;
 import com.lazxnet.urlcraft.exception.UrlExpiredException;
 import com.lazxnet.urlcraft.model.Url;
 import com.lazxnet.urlcraft.repository.UrlRepository;
@@ -74,11 +73,6 @@ public class UrlService {
         }
 
         return urlOptional;
-    }
-
-    public void incrementClickCount(Url url) {
-        url.setClickCount(url.getClickCount() + 1);
-        urlRepository.save(url);
     }
 
     private String generateShortCode() {

@@ -2,9 +2,7 @@ package com.lazxnet.urlcraft.controller;
 
 import com.lazxnet.urlcraft.dto.UrlRequest;
 import com.lazxnet.urlcraft.dto.UrlResponse;
-import com.lazxnet.urlcraft.dto.UrlStatsResponse;
 import com.lazxnet.urlcraft.exception.ResourceNotFoundException;
-import com.lazxnet.urlcraft.exception.UrlExpiredException;
 import com.lazxnet.urlcraft.model.Url;
 import com.lazxnet.urlcraft.service.UrlService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,7 +41,6 @@ public class UrlController {
         Optional<Url> urlOptional = urlService.getOriginalUrl(shortCode);
         if (urlOptional.isPresent()) {
             Url url = urlOptional.get();
-            urlService.incrementClickCount(url);
             return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create(url.getOriginalUrl()))
                     .build();
@@ -52,25 +49,4 @@ public class UrlController {
         }
     }
 
-    @GetMapping("/api/v1/urls/{shortCode}/stats")
-    @Operation(summary = "Obtener estadísticas", description = "Devuelve estadísticas de uso para una URL acortada")
-    @ApiResponse(responseCode = "200", description = "Estadísticas obtenidas exitosamente")
-    @ApiResponse(responseCode = "404", description = "URL no encontrada")
-    @ApiResponse(responseCode = "410", description = "URL expirada")
-    public ResponseEntity<UrlStatsResponse> getUrlStats(@PathVariable String shortCode) {
-        Optional<Url> urlOptional = urlService.getOriginalUrl(shortCode);
-        if (urlOptional.isPresent()) {
-            Url url = urlOptional.get();
-            UrlStatsResponse response = new UrlStatsResponse(
-                    url.getOriginalUrl(),
-                    urlService.getBaseUrl() + "/" + url.getShortCode(),
-                    url.getClickCount(),
-                    url.getCreatedAt(),
-                    url.getExpiresAt()
-            );
-            return ResponseEntity.ok(response);
-        } else {
-            throw new ResourceNotFoundException("URL no encontrada para el código: " + shortCode);
-        }
-    }
 }
