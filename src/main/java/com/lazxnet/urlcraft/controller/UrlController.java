@@ -5,10 +5,8 @@ import com.lazxnet.urlcraft.dto.UrlResponse;
 import com.lazxnet.urlcraft.exception.ResourceNotFoundException;
 import com.lazxnet.urlcraft.model.Url;
 import com.lazxnet.urlcraft.service.UrlService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,34 +15,31 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.Optional;
 
+@Slf4j
 @RestController
-@Tag(name = "URL Shortener", description = "API para acortar URLs y gestionar estadísticas")
 public class UrlController {
 
     @Autowired
     private UrlService urlService;
 
     @PostMapping("/api/v1/urls")
-    @Operation(summary = "Crear URL acortada", description = "Convierte una URL larga en una versión acortada")
-    @ApiResponse(responseCode = "201", description = "URL acortada creada exitosamente")
     public ResponseEntity<UrlResponse> createShortUrl(@Valid @RequestBody UrlRequest request) {
         String shortUrl = urlService.createShortUrl(request.getUrl());
+        log.info("Creando URL acortada: {} -> {}",request.getUrl() , shortUrl);
         return ResponseEntity.status(HttpStatus.CREATED).body(new UrlResponse(shortUrl));
     }
 
     @GetMapping("/{shortCode}")
-    @Operation(summary = "Redireccionar", description = "Redirige a la URL original usando el código corto")
-    @ApiResponse(responseCode = "302", description = "Redirección exitosa")
-    @ApiResponse(responseCode = "404", description = "URL no encontrada")
-    @ApiResponse(responseCode = "410", description = "URL expirada")
     public ResponseEntity<Void> redirectToOriginalUrl(@PathVariable String shortCode) {
         Optional<Url> urlOptional = urlService.getOriginalUrl(shortCode);
         if (urlOptional.isPresent()) {
             Url url = urlOptional.get();
+            log.info("Redireccionando código corto: {} a URL: {}", shortCode, url.getOriginalUrl());
             return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create(url.getOriginalUrl()))
                     .build();
         } else {
+            log.warn("Intento de redirección con código corto no encontrado: {}", shortCode);
             throw new ResourceNotFoundException("URL no encontrada para el código: " + shortCode);
         }
     }
