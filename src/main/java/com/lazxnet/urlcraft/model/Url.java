@@ -30,13 +30,21 @@ public class Url {
 
     private LocalDateTime createdAt;
 
+    private  LocalDateTime expiresAt;
+
     // Constructores
     public Url() {
     }
 
-    public Url(String originalUrl, String shortCode) {
+    public Url(String originalUrl, String shortCode, LocalDateTime expiresAt) {
         this.originalUrl = originalUrl;
         this.shortCode = shortCode;
         this.createdAt = LocalDateTime.now();
+        this.expiresAt = LocalDateTime.now();
+    }
+
+    // Metodo para verificar si la URL ha expirado
+    public boolean isExpired() {
+        return expiresAt != null && LocalDateTime.now().isAfter(expiresAt);
     }
 }

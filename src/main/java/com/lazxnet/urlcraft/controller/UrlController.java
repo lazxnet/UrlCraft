@@ -4,6 +4,7 @@ import com.lazxnet.urlcraft.dto.UrlRequest;
 import com.lazxnet.urlcraft.dto.UrlResponse;
 import com.lazxnet.urlcraft.dto.UrlStatsResponse;
 import com.lazxnet.urlcraft.exception.ResourceNotFoundException;
+import com.lazxnet.urlcraft.exception.UrlExpiredException;
 import com.lazxnet.urlcraft.model.Url;
 import com.lazxnet.urlcraft.service.UrlService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +38,7 @@ public class UrlController {
     @Operation(summary = "Redireccionar", description = "Redirige a la URL original usando el código corto")
     @ApiResponse(responseCode = "302", description = "Redirección exitosa")
     @ApiResponse(responseCode = "404", description = "URL no encontrada")
+    @ApiResponse(responseCode = "410", description = "URL expirada")
     public ResponseEntity<Void> redirectToOriginalUrl(@PathVariable String shortCode) {
         Optional<Url> urlOptional = urlService.getOriginalUrl(shortCode);
         if (urlOptional.isPresent()) {
@@ -54,6 +56,7 @@ public class UrlController {
     @Operation(summary = "Obtener estadísticas", description = "Devuelve estadísticas de uso para una URL acortada")
     @ApiResponse(responseCode = "200", description = "Estadísticas obtenidas exitosamente")
     @ApiResponse(responseCode = "404", description = "URL no encontrada")
+    @ApiResponse(responseCode = "410", description = "URL expirada")
     public ResponseEntity<UrlStatsResponse> getUrlStats(@PathVariable String shortCode) {
         Optional<Url> urlOptional = urlService.getOriginalUrl(shortCode);
         if (urlOptional.isPresent()) {
@@ -62,7 +65,8 @@ public class UrlController {
                     url.getOriginalUrl(),
                     urlService.getBaseUrl() + "/" + url.getShortCode(),
                     url.getClickCount(),
-                    url.getCreatedAt()
+                    url.getCreatedAt(),
+                    url.getExpiresAt()
             );
             return ResponseEntity.ok(response);
         } else {
