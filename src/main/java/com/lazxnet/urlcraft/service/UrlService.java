@@ -30,10 +30,14 @@ public class UrlService {
     private UrlRepository urlRepository;
 
     public String createShortUrl(String originalUrl) {
-        return createShortUrl(originalUrl, DEFAULT_EXPIRATION_DAYS);
+        return createShortUrl(originalUrl, null ,DEFAULT_EXPIRATION_DAYS);
     }
 
-    public String createShortUrl(String originalUrl, int expirationDays) {
+    public String createShortUrl(String originalUrl, String customCode){
+        return createShortUrl(originalUrl, customCode, DEFAULT_EXPIRATION_DAYS);
+    }
+
+    public String createShortUrl(String originalUrl, String customCode, int expirationDays) {
         // Validar la URL
         if (!isValidUrl(originalUrl)) {
             throw new InvalidUrlException("URL no válida");
@@ -44,11 +48,27 @@ public class UrlService {
             throw new IllegalArgumentException("Los días de expiración deben ser al menos 1");
         }
 
-        // Generar código corto único
         String shortCode;
-        do {
-            shortCode = generateShortCode();
-        } while (urlRepository.existsByShortCode(shortCode));
+
+        // Si se proporciona un código personalizado, validarlo y usarlo
+        if (customCode != null && !customCode.trim().isEmpty()) {
+            // Validar formato del código personalizado
+            if (!isValidCustomCode(customCode)) {
+                throw new IllegalArgumentException("El código personalizado no es válido. Solo puede contener letras, números, guiones y guiones bajos, y debe tener entre 4 y 20 caracteres");
+            }
+
+            // Verificar si el código personalizado ya existe
+            if (urlRepository.existsByShortCode(customCode)) {
+                throw new IllegalArgumentException("El código personalizado ya está en uso");
+            }
+
+            shortCode = customCode;
+        } else {
+            // Generar código corto único
+            do {
+                shortCode = generateShortCode();
+            } while (urlRepository.existsByShortCode(shortCode));
+        }
 
         // Calcular fecha de expiración
         LocalDateTime expiresAt = LocalDateTime.now().plusDays(expirationDays);
@@ -91,5 +111,15 @@ public class UrlService {
         } catch (MalformedURLException e) {
             return false;
         }
+    }
+
+    private boolean isValidCustomCode(String customCode) {
+        // Validar longitud
+        if (customCode.length() <4 || customCode.length() > 20) {
+            return false;
+        }
+
+        // Validar caracteres permitidos (solo letras, números, guiones y guiones bajos)
+        return customCode.matches("^[a-zA-Z0-9_-]*$");
     }
 }

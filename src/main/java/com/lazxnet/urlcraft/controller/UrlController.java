@@ -16,6 +16,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @Slf4j
+@CrossOrigin(value = "http://localhost:5173")
 @RestController
 public class UrlController {
 
@@ -24,8 +25,20 @@ public class UrlController {
 
     @PostMapping("/api/v1/urls")
     public ResponseEntity<UrlResponse> createShortUrl(@Valid @RequestBody UrlRequest request) {
-        String shortUrl = urlService.createShortUrl(request.getUrl());
-        log.info("Creando URL acortada: {} -> {}",request.getUrl() , shortUrl);
+
+        String shortUrl;
+
+        if (request.getCustomCode() != null && !request.getCustomCode().trim().isEmpty()) {
+            //usar el código personalizado si se proporciona
+            shortUrl = urlService.createShortUrl(request.getUrl(), request.getCustomCode());
+            log.info("Creando URL acortada personalizada: {} -> {} (código: {})",
+                    request.getUrl(), shortUrl, request.getCustomCode());
+        } else {
+            //generar código automáticamente si no se proporciona código personalizado
+            shortUrl = urlService.createShortUrl(request.getUrl());
+            log.info("Creando URL acortada: {} -> {}", request.getUrl(), shortUrl);
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(new UrlResponse(shortUrl));
     }
 
