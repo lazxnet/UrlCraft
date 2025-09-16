@@ -1,5 +1,6 @@
 package com.lazxnet.urlcraft.controller;
 
+import com.lazxnet.urlcraft.dto.UrlListResponse;
 import com.lazxnet.urlcraft.dto.UrlRequest;
 import com.lazxnet.urlcraft.dto.UrlResponse;
 import com.lazxnet.urlcraft.exception.ResourceNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -55,6 +57,13 @@ public class UrlController {
             log.warn("Intento de redirección con código corto no encontrado: {}", shortCode);
             throw new ResourceNotFoundException("URL no encontrada para el código: " + shortCode);
         }
+    }
+
+    @GetMapping("/api/v1/urls")
+    public ResponseEntity<List<UrlListResponse>> getAllUrls() {
+        List<UrlListResponse> urls = urlService.getAllUrls();
+        log.info("Retornando todos las URLs: {}", urls);
+        return ResponseEntity.ok(urls);
     }
 
 }

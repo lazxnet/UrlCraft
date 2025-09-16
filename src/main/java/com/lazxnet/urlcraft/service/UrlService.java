@@ -1,5 +1,6 @@
 package com.lazxnet.urlcraft.service;
 
+import com.lazxnet.urlcraft.dto.UrlListResponse;
 import com.lazxnet.urlcraft.exception.InvalidUrlException;
 import com.lazxnet.urlcraft.exception.UrlExpiredException;
 import com.lazxnet.urlcraft.model.Url;
@@ -12,8 +13,10 @@ import org.springframework.stereotype.Service;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class UrlService {
@@ -121,5 +124,16 @@ public class UrlService {
 
         // Validar caracteres permitidos (solo letras, números, guiones y guiones bajos)
         return customCode.matches("^[a-zA-Z0-9_-]*$");
+    }
+
+    public List<UrlListResponse> getAllUrls() {
+        List<Url> urls = urlRepository.findAll();
+        return urls.stream()
+                .map(url -> new UrlListResponse(
+                        baseUrl + "/" + url.getShortCode(),
+                        url.getOriginalUrl(),
+                        url.getShortCode()
+                ))
+                .collect(Collectors.toList());
     }
 }
