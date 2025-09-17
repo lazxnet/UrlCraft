@@ -2,10 +2,12 @@ package com.lazxnet.urlcraft.service;
 
 import com.lazxnet.urlcraft.dto.UrlListResponse;
 import com.lazxnet.urlcraft.exception.InvalidUrlException;
+import com.lazxnet.urlcraft.exception.ResourceNotFoundException;
 import com.lazxnet.urlcraft.exception.UrlExpiredException;
 import com.lazxnet.urlcraft.model.Url;
 import com.lazxnet.urlcraft.repository.UrlRepository;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UrlService {
 
@@ -135,5 +138,14 @@ public class UrlService {
                         url.getShortCode()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public void deleteUrl(String shortCode) {
+        if (!urlRepository.existsByShortCode(shortCode)) {
+            throw new ResourceNotFoundException("URL no encontrada para el codigo: " + shortCode);
+        }
+
+        log.info("Eliminando url: " + shortCode);
+        urlRepository.deleteByShortCode(shortCode);
     }
 }

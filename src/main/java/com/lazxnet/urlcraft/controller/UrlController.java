@@ -66,4 +66,11 @@ public class UrlController {
         return ResponseEntity.ok(urls);
     }
 
+    @DeleteMapping("/api/v1/urls/{shortCode}")
+    public ResponseEntity<Void> deleteUrl(@PathVariable String shortCode) {
+        urlService.deleteUrl(shortCode);
+        log.info("URL eliminada exitosamente: {}", shortCode);
+        return ResponseEntity.noContent().build();
+    }
+
 }
