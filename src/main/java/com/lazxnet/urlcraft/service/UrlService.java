@@ -130,8 +130,8 @@ public class UrlService {
         List<Url> urls = urlRepository.findAll();
         return urls.stream()
                 .map(url -> new UrlListResponse(
-                        baseUrl + "/" + url.getShortCode(),
                         url.getOriginalUrl(),
+                        baseUrl + "/" + url.getShortCode(),
                         url.getShortCode()
                 ))
                 .collect(Collectors.toList());
