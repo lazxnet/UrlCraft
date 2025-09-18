@@ -16,6 +16,9 @@ public interface UrlRepository extends JpaRepository<Url, UUID> {
     Optional<Url> findByShortCode(String shortCode);
     boolean existsByShortCode(String shortCode);
 
+    @Query("SELECT COUNT(u) > 0 FROM Url u WHERE u.shortCode = :shortCode AND u.id != :id")
+    boolean existsByShortCodeAndIdNot(@Param("shortCode") String shortCode,@Param("id") UUID id);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM Url u WHERE u.shortCode = :shortCode")

@@ -3,6 +3,7 @@ package com.lazxnet.urlcraft.controller;
 import com.lazxnet.urlcraft.dto.UrlListResponse;
 import com.lazxnet.urlcraft.dto.UrlRequest;
 import com.lazxnet.urlcraft.dto.UrlResponse;
+import com.lazxnet.urlcraft.dto.UrlUpdateRequest;
 import com.lazxnet.urlcraft.exception.ResourceNotFoundException;
 import com.lazxnet.urlcraft.model.Url;
 import com.lazxnet.urlcraft.service.UrlService;
@@ -65,6 +66,14 @@ public class UrlController {
         log.info("Retornando todos las URLs: {}", urls);
         return ResponseEntity.ok(urls);
     }
+
+    @PutMapping("/api/v1/urls/{shortCode}")
+    public ResponseEntity<UrlResponse> updateUrl(@PathVariable String shortCode, @Valid @RequestBody UrlUpdateRequest request) {
+        String updatedShortUrl = urlService.updateUrl(shortCode, request.getOriginalUrl());
+        log.info("URL actualizada: {} -> {}", shortCode, updatedShortUrl);
+        return ResponseEntity.ok(new UrlResponse(updatedShortUrl));
+    }
+
 
     @DeleteMapping("/api/v1/urls/{shortCode}")
     public ResponseEntity<Void> deleteUrl(@PathVariable String shortCode) {

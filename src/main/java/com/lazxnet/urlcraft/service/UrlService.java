@@ -148,4 +148,27 @@ public class UrlService {
         log.info("Eliminando url: " + shortCode);
         urlRepository.deleteByShortCode(shortCode);
     }
+
+    public String updateUrl(String currentShortCode, String newOriginalUrl) {
+        // Buscar la URL existente
+        Optional<Url> existingUrlOpt = urlRepository.findByShortCode(currentShortCode);
+        if (existingUrlOpt.isEmpty()) {
+            throw new ResourceNotFoundException("URL no encontrada para el código: " + currentShortCode);
+        }
+
+        Url existingUrl = existingUrlOpt.get();
+
+        // Validar la nueva URL
+        if (!isValidUrl(newOriginalUrl)) {
+            throw new InvalidUrlException("URL no válida");
+        }
+
+        // Actualizar solo la URL original
+        existingUrl.setOriginalUrl(newOriginalUrl);
+
+        // Guardar los cambios
+        urlRepository.save(existingUrl);
+        log.info("Actualizando url: " + existingUrl);
+        return baseUrl + "/" + existingUrl.getShortCode();
+    }
 }
