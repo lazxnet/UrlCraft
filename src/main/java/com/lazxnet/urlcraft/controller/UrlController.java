@@ -70,7 +70,7 @@ public class UrlController {
     @PutMapping("/api/v1/urls/{shortCode}")
     public ResponseEntity<ShortCodeResponse> updateUrl(@PathVariable String shortCode, @Valid @RequestBody UrlUpdateRequest request) {
         String updatedShortCode = urlService.updateUrl(shortCode, request.getOriginalUrl());
-        log.info("URL actualizada: {} -> {}", shortCode, updatedShortCode);
+        log.info("URL actualizada: {}", shortCode);
         return ResponseEntity.ok(new ShortCodeResponse(updatedShortCode));
     }
 

@@ -135,7 +135,6 @@ public class UrlServiceImpl implements UrlService {
 
         // Guardar los cambios
         urlRepository.save(existingUrl);
-        log.info("Actualizando url: " + existingUrl);
         return existingUrl.getShortCode();
     }
 }
