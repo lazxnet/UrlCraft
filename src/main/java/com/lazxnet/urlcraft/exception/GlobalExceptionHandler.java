@@ -22,11 +22,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    @ExceptionHandler(UrlExpiredException.class)
-    public ResponseEntity<String> handleUrlExpiredException(UrlExpiredException ex) {
-        return ResponseEntity.status(HttpStatus.GONE).body(ex.getMessage()); // 410 Gone
-    }
-
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

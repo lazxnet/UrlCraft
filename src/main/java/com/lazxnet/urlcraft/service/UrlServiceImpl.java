@@ -3,18 +3,14 @@ package com.lazxnet.urlcraft.service;
 import com.lazxnet.urlcraft.dto.UrlListResponse;
 import com.lazxnet.urlcraft.exception.InvalidUrlException;
 import com.lazxnet.urlcraft.exception.ResourceNotFoundException;
-import com.lazxnet.urlcraft.exception.UrlExpiredException;
 import com.lazxnet.urlcraft.model.Url;
 import com.lazxnet.urlcraft.repository.UrlRepository;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -26,32 +22,18 @@ public class UrlServiceImpl implements UrlService {
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final int CODE_LENGTH = 6;
-    private static final int DEFAULT_EXPIRATION_DAYS = 30;
-
-    @Value("${app.base-url}")
-    @Getter
-    private String baseUrl;
 
     @Autowired
     private UrlRepository urlRepository;
 
     public String createShortUrl(String originalUrl) {
-        return createShortUrl(originalUrl, null ,DEFAULT_EXPIRATION_DAYS);
+        return createShortUrl(originalUrl, null);
     }
 
-    public String createShortUrl(String originalUrl, String customCode){
-        return createShortUrl(originalUrl, customCode, DEFAULT_EXPIRATION_DAYS);
-    }
-
-    public String createShortUrl(String originalUrl, String customCode, int expirationDays) {
+    public String createShortUrl(String originalUrl, String customCode) {
         // Validar la URL
         if (!isValidUrl(originalUrl)) {
             throw new InvalidUrlException("URL no válida");
-        }
-
-        // Validar días de expiración
-        if (expirationDays < 1) {
-            throw new IllegalArgumentException("Los días de expiración deben ser al menos 1");
         }
 
         String shortCode;
@@ -76,29 +58,15 @@ public class UrlServiceImpl implements UrlService {
             } while (urlRepository.existsByShortCode(shortCode));
         }
 
-        // Calcular fecha de expiración
-        LocalDateTime expiresAt = LocalDateTime.now().plusDays(expirationDays);
-
         // Crear y guardar la URL
-        Url url = new Url(originalUrl, shortCode, expiresAt);
+        Url url = new Url(originalUrl, shortCode);
         urlRepository.save(url);
 
         return shortCode;
     }
 
     public Optional<Url> getOriginalUrl(String shortCode) {
-        Optional<Url> urlOptional = urlRepository.findByShortCode(shortCode);
-
-        if (urlOptional.isPresent()) {
-            Url url = urlOptional.get();
-
-            // Verificar si la URL ha expirado
-            if (url.isExpired()) {
-                throw new UrlExpiredException("La URL ha expirado");
-            }
-        }
-
-        return urlOptional;
+        return urlRepository.findByShortCode(shortCode);
     }
 
     private String generateShortCode() {
@@ -121,7 +89,7 @@ public class UrlServiceImpl implements UrlService {
 
     private boolean isValidCustomCode(String customCode) {
         // Validar longitud
-        if (customCode.length() <4 || customCode.length() > 20) {
+        if (customCode.length() < 4 || customCode.length() > 20) {
             return false;
         }
 
