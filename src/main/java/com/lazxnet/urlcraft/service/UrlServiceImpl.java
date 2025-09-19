@@ -83,7 +83,7 @@ public class UrlServiceImpl implements UrlService {
         Url url = new Url(originalUrl, shortCode, expiresAt);
         urlRepository.save(url);
 
-        return baseUrl + "/" + shortCode;
+        return shortCode;
     }
 
     public Optional<Url> getOriginalUrl(String shortCode) {
@@ -134,7 +134,6 @@ public class UrlServiceImpl implements UrlService {
         return urls.stream()
                 .map(url -> new UrlListResponse(
                         url.getOriginalUrl(),
-                        baseUrl + "/" + url.getShortCode(),
                         url.getShortCode()
                 ))
                 .collect(Collectors.toList());
@@ -169,6 +168,6 @@ public class UrlServiceImpl implements UrlService {
         // Guardar los cambios
         urlRepository.save(existingUrl);
         log.info("Actualizando url: " + existingUrl);
-        return baseUrl + "/" + existingUrl.getShortCode();
+        return existingUrl.getShortCode();
     }
 }

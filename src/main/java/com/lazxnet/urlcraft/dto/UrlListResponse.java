@@ -7,12 +7,10 @@ import lombok.Setter;
 @Setter
 public class UrlListResponse {
     private String originalUrl;
-    private String shortUrl;
     private String shortCode;
 
-    public UrlListResponse(String originalUrl, String shortUrl, String shortCode) {
+    public UrlListResponse(String originalUrl, String shortCode) {
         this.originalUrl = originalUrl;
-        this.shortUrl = shortUrl;
         this.shortCode = shortCode;
     }
 }

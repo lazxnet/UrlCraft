@@ -1,8 +1,8 @@
 package com.lazxnet.urlcraft.controller;
 
+import com.lazxnet.urlcraft.dto.ShortCodeResponse;
 import com.lazxnet.urlcraft.dto.UrlListResponse;
 import com.lazxnet.urlcraft.dto.UrlRequest;
-import com.lazxnet.urlcraft.dto.UrlResponse;
 import com.lazxnet.urlcraft.dto.UrlUpdateRequest;
 import com.lazxnet.urlcraft.exception.ResourceNotFoundException;
 import com.lazxnet.urlcraft.model.Url;
@@ -27,22 +27,22 @@ public class UrlController {
     private UrlServiceImpl urlService;
 
     @PostMapping("/api/v1/urls")
-    public ResponseEntity<UrlResponse> createShortUrl(@Valid @RequestBody UrlRequest request) {
+    public ResponseEntity<ShortCodeResponse> createShortUrl(@Valid @RequestBody UrlRequest request) {
 
-        String shortUrl;
+        String shortCode;
 
         if (request.getCustomCode() != null && !request.getCustomCode().trim().isEmpty()) {
             //usar el código personalizado si se proporciona
-            shortUrl = urlService.createShortUrl(request.getUrl(), request.getCustomCode());
+            shortCode = urlService.createShortUrl(request.getUrl(), request.getCustomCode());
             log.info("Creando URL acortada personalizada: {} -> {} (código: {})",
-                    request.getUrl(), shortUrl, request.getCustomCode());
+                    request.getUrl(), shortCode, request.getCustomCode());
         } else {
             //generar código automáticamente si no se proporciona código personalizado
-            shortUrl = urlService.createShortUrl(request.getUrl());
-            log.info("Creando URL acortada: {} -> {}", request.getUrl(), shortUrl);
+            shortCode = urlService.createShortUrl(request.getUrl());
+            log.info("Creando URL acortada: {} -> {}", request.getUrl(), shortCode);
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new UrlResponse(shortUrl));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ShortCodeResponse(shortCode));
     }
 
     @GetMapping("/{shortCode}")
@@ -68,10 +68,10 @@ public class UrlController {
     }
 
     @PutMapping("/api/v1/urls/{shortCode}")
-    public ResponseEntity<UrlResponse> updateUrl(@PathVariable String shortCode, @Valid @RequestBody UrlUpdateRequest request) {
-        String updatedShortUrl = urlService.updateUrl(shortCode, request.getOriginalUrl());
-        log.info("URL actualizada: {} -> {}", shortCode, updatedShortUrl);
-        return ResponseEntity.ok(new UrlResponse(updatedShortUrl));
+    public ResponseEntity<ShortCodeResponse> updateUrl(@PathVariable String shortCode, @Valid @RequestBody UrlUpdateRequest request) {
+        String updatedShortCode = urlService.updateUrl(shortCode, request.getOriginalUrl());
+        log.info("URL actualizada: {} -> {}", shortCode, updatedShortCode);
+        return ResponseEntity.ok(new ShortCodeResponse(updatedShortCode));
     }
 
 
