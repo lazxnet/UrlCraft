@@ -6,7 +6,7 @@ import com.lazxnet.urlcraft.dto.UrlResponse;
 import com.lazxnet.urlcraft.dto.UrlUpdateRequest;
 import com.lazxnet.urlcraft.exception.ResourceNotFoundException;
 import com.lazxnet.urlcraft.model.Url;
-import com.lazxnet.urlcraft.service.UrlService;
+import com.lazxnet.urlcraft.service.UrlServiceImpl;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.Optional;
 public class UrlController {
 
     @Autowired
-    private UrlService urlService;
+    private UrlServiceImpl urlService;
 
     @PostMapping("/api/v1/urls")
     public ResponseEntity<UrlResponse> createShortUrl(@Valid @RequestBody UrlRequest request) {
