@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@CrossOrigin(value = "https://urlcraft.onrender.com")
 @RestController
 public class UrlController {
 
