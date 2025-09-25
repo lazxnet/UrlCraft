@@ -1,0 +1,11 @@
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\controller\UrlController.java
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\dto\UrlRequest.java
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\dto\UrlResponse.java
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\dto\UrlStatsResponse.java
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\exception\GlobalExceptionHandler.java
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\exception\InvalidUrlException.java
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\exception\ResourceNotFoundException.java
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\model\Url.java
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\repository\UrlRepository.java
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\service\UrlService.java
+C:\Users\Lazxnet\Desktop\Projects\UrlCraft\src\main\java\com\lazxnet\urlcraft\UrlCraftApplication.java
